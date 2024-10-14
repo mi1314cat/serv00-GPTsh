@@ -11,7 +11,7 @@ echo -e "\e[0m"
 
 # 获取当前用户名和主目录
 USER=$(whoami)
-USER_HOME=$(readlink -f /home/$USER)
+USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
 HYSTERIA_WORKDIR="$USER_HOME/.hysteria"
 
 # 创建必要的目录
