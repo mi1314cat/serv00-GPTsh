@@ -72,12 +72,16 @@ EOF
 
 # 运行 Hysteria
 run_hysteria() {
-  nohup "$HYSTERIA_WORKDIR/hysteria" server "$HYSTERIA_WORKDIR/config.yaml" > "$HYSTERIA_WORKDIR/hysteria.log" 2>&1 &
-  sleep 1
-  echo "Hysteria 正在运行"
-  echo "日志文件位置: $HYSTERIA_WORKDIR/hysteria.log"
-}
+  nohup "$HYSTERIA_WORKDIR/hysteria" server "$HYSTERIA_WORKDIR/config.yaml" >/dev/null 2>&1 &
+  sleep 2
 
+  # 检查是否启动成功
+  if pgrep -f "$HYSTERIA_WORKDIR/hysteria" > /dev/null; then
+    echo "Hysteria 已启动"
+  else
+    echo "Hysteria 启动失败，请检查配置文件或日志"
+  fi
+}
 
 # 获取本机 IP 地址
 get_ip() {
@@ -87,15 +91,6 @@ get_ip() {
     exit 1
   fi
   echo "本机IP: $HOST_IP"
-}
-
-# 检查 Hysteria 服务状态
-check_service_status() {
-  if ps aux | grep -v grep | grep -q "$HYSTERIA_WORKDIR/hysteria"; then
-    echo "Hysteria 服务状态: 正在运行"
-  else
-    echo "Hysteria 服务状态: 未运行"
-  fi
 }
 
 # 输出配置
@@ -118,9 +113,6 @@ print_config() {
   skip-cert-verify: true
   fast-open: true
 EOF
-
-  # 检查并打印服务状态
-  check_service_status
 }
 
 # 安装 Hysteria
