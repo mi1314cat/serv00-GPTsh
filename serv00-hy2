@@ -90,11 +90,15 @@ get_ip() {
 # 输出配置
 print_config() {
   echo "Hysteria2 安装成功"
-  echo "V2rayN或Nekobox 配置"
+  echo "运行状态: Hysteria 正在运行"
+  echo "密码: $PASSWORD"
+  echo "端口: $SERVER_PORT"
+  
+  echo "V2rayN或Nekobox 配置:"
   echo "hysteria2://$PASSWORD@$HOST_IP:$SERVER_PORT/?sni=www.bing.com&alpn=h3&insecure=1"
   
   # 输出 YAML 配置
-  echo "YAML 配置:"
+  echo "以下是 YAML 配置:"
   cat << EOF
 - name: Hysteria
   type: hysteria2
