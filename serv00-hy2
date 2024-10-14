@@ -73,13 +73,16 @@ EOF
 # 运行 Hysteria
 run_hysteria() {
   nohup "$HYSTERIA_WORKDIR/hysteria" server "$HYSTERIA_WORKDIR/config.yaml" >/dev/null 2>&1 &
-  sleep 2
+  sleep 1
+  echo "Hysteria 正在运行"
+}
 
-  # 检查是否启动成功
+# 检查 Hysteria 是否运行
+check_hysteria_status() {
   if pgrep -f "$HYSTERIA_WORKDIR/hysteria" > /dev/null; then
-    echo "Hysteria 已启动"
+    echo "Hysteria 服务状态: 正在运行"
   else
-    echo "Hysteria 启动失败，请检查配置文件或日志"
+    echo "Hysteria 服务状态: 未运行"
   fi
 }
 
@@ -113,6 +116,9 @@ print_config() {
   skip-cert-verify: true
   fast-open: true
 EOF
+
+  # 检查并打印服务状态
+  check_hysteria_status
 }
 
 # 安装 Hysteria
