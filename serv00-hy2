@@ -9,59 +9,54 @@
     echo "       -----------------------------------------"
     echo -e "\e[0m"  
 }
-# 获取当前用户名和工作目录
+
+# 获取当前用户名
 USER=$(whoami)
-USER_HOME=$(readlink -f /home/$USER)
+USER_HOME=$(readlink -f /home/$USER) # 获取标准化的用户主目录
 HYSTERIA_WORKDIR="$USER_HOME/.hysteria"
 
-# 创建必要的目录
+# 创建必要的目录，如果不存在
 [ ! -d "$HYSTERIA_WORKDIR" ] && mkdir -p "$HYSTERIA_WORKDIR"
 
-# 随机生成密码
+###################################################
+
+# 随机生成密码函数
 generate_password() {
   export PASSWORD=${PASSWORD:-$(uuidgen)}
 }
 
-# 设置服务器端口
+# 设置服务器端口函数
 set_server_port() {
   read -p "请输入 hysteria2 端口 (默认 20026): " input_port
   export SERVER_PORT="${input_port:-20026}"
 }
 
-# 下载 Hysteria 2
-download_hysteria() {
+# 下载最新的 Hysteria 函数
+download_latest_hysteria() {
   echo "正在下载最新的 Hysteria..."
   ARCH=$(uname -m)
   DOWNLOAD_DIR="$HYSTERIA_WORKDIR"
-
-  if [[ "$ARCH" == "amd64" || "$ARCH" == "x86_64" ]]; then
-    DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64"
-  elif [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
-    DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-arm64"
+  
+  if [[ "$ARCH" == "arm" || "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
+    URL="https://download.hysteria.network/app/latest/hysteria-freebsd-arm64"
+  elif [[ "$ARCH" == "amd64" || "$ARCH" == "x86_64" || "$ARCH" == "x86" ]]; then
+    URL="https://download.hysteria.network/app/latest/hysteria-freebsd-amd64"
   else
     echo "不支持的架构: $ARCH"
     exit 1
   fi
 
-  curl -L -o "$DOWNLOAD_DIR/hysteria" "$DOWNLOAD_URL"
-  
-  if [ ! -f "$DOWNLOAD_DIR/hysteria" ]; then
-    echo "Hysteria 下载失败，请检查 URL。"
+  curl -L -sS -o "$DOWNLOAD_DIR/hysteria" "$URL"
+  if [[ $? -ne 0 ]]; then
+    echo "Hysteria 下载失败，请检查网络或 URL。"
     exit 1
   fi
-
+  
   chmod +x "$DOWNLOAD_DIR/hysteria"
   echo "下载完成"
 }
 
-# 生成证书
-generate_cert() {
-  openssl req -x509 -nodes -newkey ec:<(openssl ecparam -name prime256v1) \
-  -keyout "$HYSTERIA_WORKDIR/server.key" -out "$HYSTERIA_WORKDIR/server.crt" \
-  -subj "/CN=bing.com" -days 36500
-}
-
-# 生成配置文件
+# 生成配置文件函数
 generate_config() {
   cat << EOF > "$HYSTERIA_WORKDIR/config.yaml"
 listen: :$SERVER_PORT
@@ -88,49 +83,38 @@ transport:
 EOF
 }
 
-# 运行 Hysteria
+# 运行下载的文件函数
 run_hysteria() {
-  if [ -f "$HYSTERIA_WORKDIR/hysteria" ]; then
-    nohup "$HYSTERIA_WORKDIR/hysteria" server -c "$HYSTERIA_WORKDIR/config.yaml" >/dev/null 2>&1 &
-    echo -e "\e[1;32mHysteria 2 正在运行\e[0m"
-  else
-    echo -e "\e[1;31mHysteria 2 未找到，请检查下载是否成功\e[0m"
-    exit 1
-  fi
+  nohup "$HYSTERIA_WORKDIR/hysteria" server "$HYSTERIA_WORKDIR/config.yaml" >/dev/null 2>&1 &
+  sleep 1
+  echo -e "\e[1;32mHysteria 正在运行\e[0m"
 }
 
-# 获取 IP 地址
+# 获取IP地址函数
 get_ip() {
   ipv4=$(curl -s 4.ipw.cn)
   if [[ -n "$ipv4" ]]; then
     HOST_IP="$ipv4"
   else
-    ipv6=$(curl -s --max-time 1 6.ipw.cn)
-    if [[ -n "$ipv6" ]]; then
-      HOST_IP="$ipv6"
-    else
-      echo -e "\e[1;35m无法获取IPv4或IPv6地址\033[0m"
-      exit 1
-    fi
+    echo -e "\e[1;35m无法获取IPv4地址\033[0m"
+    exit 1
   fi
   echo -e "\e[1;32m本机IP: $HOST_IP\033[0m"
 }
 
-# 输出配置
+# 输出配置函数
 print_config() {
-  ISP=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18}' | sed -e 's/ /_/g')
-  
   echo -e "\e[1;32mHysteria2 安装成功\033[0m"
+  echo ""
   echo -e "\e[1;33mV2rayN或Nekobox 配置\033[0m"
-  echo -e "\e[1;32mhysteria2://$PASSWORD@$HOST_IP:$SERVER_PORT/?sni=www.bing.com&alpn=h3&insecure=1#$ISP\033[0m"
+  echo -e "\e[1;32mhysteria2://$PASSWORD@$HOST_IP:$SERVER_PORT/?sni=www.bing.com&alpn=h3&insecure=1\033[0m"
 }
 
 # 安装 Hysteria
 install_hysteria() {
   generate_password
   set_server_port
-  download_hysteria
-  generate_cert
+  download_latest_hysteria
   generate_config
   run_hysteria
   get_ip
@@ -143,4 +127,6 @@ install_hysteria_answer=${install_hysteria_answer^^}
 
 if [[ "$install_hysteria_answer" == "Y" ]]; then
   install_hysteria
+else
+  echo "安装被取消。"
 fi
