@@ -89,7 +89,7 @@ get_ip() {
 
 # 检查 Hysteria 服务状态
 check_service_status() {
-  if systemctl is-active --quiet hysteria-server.service; then
+  if ps aux | grep -v grep | grep -q "$HYSTERIA_WORKDIR/hysteria"; then
     echo "Hysteria 服务状态: 正在运行"
   else
     echo "Hysteria 服务状态: 未运行"
