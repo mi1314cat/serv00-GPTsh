@@ -23,7 +23,7 @@ set_server_port() {
 download_latest_hysteria() {
   echo "正在下载最新的 Hysteria..."
   ARCH=$(uname -m)
-  
+
   if [[ "$ARCH" == "arm" || "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
     URL="https://download.hysteria.network/app/latest/hysteria-freebsd-arm64"
   elif [[ "$ARCH" == "amd64" || "$ARCH" == "x86_64" ]]; then
@@ -38,7 +38,7 @@ download_latest_hysteria() {
     echo "Hysteria 下载失败，请检查网络或 URL。"
     exit 1
   fi
-  
+
   chmod +x "$HYSTERIA_WORKDIR/hysteria"
   echo "下载完成"
 }
@@ -87,18 +87,23 @@ get_ip() {
   echo "本机IP: $HOST_IP"
 }
 
+# 检查 Hysteria 服务状态
+check_service_status() {
+  if systemctl is-active --quiet hysteria-server.service; then
+    echo "Hysteria 服务状态: 正在运行"
+  else
+    echo "Hysteria 服务状态: 未运行"
+  fi
+}
+
 # 输出配置
 print_config() {
   echo "Hysteria2 安装成功"
-  echo "运行状态: Hysteria 正在运行"
-  echo "密码: $PASSWORD"
-  echo "端口: $SERVER_PORT"
-  
-  echo "V2rayN或Nekobox 配置:"
+  echo "V2rayN或Nekobox 配置"
   echo "hysteria2://$PASSWORD@$HOST_IP:$SERVER_PORT/?sni=www.bing.com&alpn=h3&insecure=1"
   
   # 输出 YAML 配置
-  echo "以下是 YAML 配置:"
+  echo "YAML 配置:"
   cat << EOF
 - name: Hysteria
   type: hysteria2
@@ -111,6 +116,9 @@ print_config() {
   skip-cert-verify: true
   fast-open: true
 EOF
+
+  # 检查并打印服务状态
+  check_service_status
 }
 
 # 安装 Hysteria
