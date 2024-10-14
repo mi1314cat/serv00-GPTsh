@@ -72,10 +72,12 @@ EOF
 
 # 运行 Hysteria
 run_hysteria() {
-  nohup "$HYSTERIA_WORKDIR/hysteria" server "$HYSTERIA_WORKDIR/config.yaml" >/dev/null 2>&1 &
+  nohup "$HYSTERIA_WORKDIR/hysteria" server "$HYSTERIA_WORKDIR/config.yaml" > "$HYSTERIA_WORKDIR/hysteria.log" 2>&1 &
   sleep 1
   echo "Hysteria 正在运行"
+  echo "日志文件位置: $HYSTERIA_WORKDIR/hysteria.log"
 }
+
 
 # 获取本机 IP 地址
 get_ip() {
