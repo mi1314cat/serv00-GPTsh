@@ -1,5 +1,5 @@
 
-### serv00 hysteria2脚本
+### serv00一键安装hysteria2脚本
 ```bash
 bash <(curl -fsSL https://github.com/mi1314cat/serv00-GPTsh/raw/main/serv00-hy2)
 
@@ -9,9 +9,9 @@ bash <(curl -fsSL https://github.com/mi1314cat/serv00-GPTsh/raw/main/serv00-hy2)
 添加 Secrets.`ACCOUNTS_JSON` 变量
 ```json
 [
-  {"username": "cmliusss", "password": "7HEt(xeRxttdvgB^nCU6", "panel": "panel4.serv00.com", "ssh": "s4.serv00.com"},
-  {"username": "cmliussss2018", "password": "4))@cRP%HtN8AryHlh^#", "panel": "panel7.serv00.com", "ssh": "s7.serv00.com"},
-  {"username": "4r885wvl", "password": "%Mg^dDMo6yIY$dZmxWNy", "panel": "panel.ct8.pl", "ssh": "s1.ct8.pl"}
+  {"username": "catmi", "password": "*********", "panel": "panel12.serv00.com", "ssh": "s12.serv00.com"},
+  {"username": "catmi1", "password": "*********", "panel": "panel13.serv00.com", "ssh": "s13.serv00.com"},
+  {"username": "catmi2", "password": "**********", "panel": "panel.ct8.pl", "ssh": "s1.ct8.pl"}
 ]
 ```
 # cloudflare worker部署保活
