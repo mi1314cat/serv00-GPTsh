@@ -1,13 +1,11 @@
 #!/bin/bash
 
 # 介绍信息
-echo -e "\e[92m" 
 echo "                       |\__/,|   (`\\ " 
 echo "                     _.|o o  |_   ) )"
 echo "       -------------(((---(((-------------------"
 echo "                           catmi "
 echo "       -----------------------------------------"
-echo -e "\e[0m"  
 
 # 获取当前用户名和主目录
 USER=$(whoami)
@@ -83,24 +81,24 @@ EOF
 run_hysteria() {
   nohup "$HYSTERIA_WORKDIR/hysteria" server "$HYSTERIA_WORKDIR/config.yaml" >/dev/null 2>&1 &
   sleep 1
-  echo -e "\e[1;32mHysteria 正在运行\e[0m"
+  echo "Hysteria 正在运行"
 }
 
 # 获取本机 IP 地址
 get_ip() {
   HOST_IP=$(curl -s 4.ipw.cn)
   if [[ -z "$HOST_IP" ]]; then
-    echo -e "\e[1;35m无法获取IPv4地址\033[0m"
+    echo "无法获取IPv4地址"
     exit 1
   fi
-  echo -e "\e[1;32m本机IP: $HOST_IP\033[0m"
+  echo "本机IP: $HOST_IP"
 }
 
 # 输出配置
 print_config() {
-  echo -e "\e[1;32mHysteria2 安装成功\033[0m"
-  echo -e "\e[1;33mV2rayN或Nekobox 配置\033[0m"
-  echo -e "\e[1;32mhysteria2://$PASSWORD@$HOST_IP:$SERVER_PORT/?sni=www.bing.com&alpn=h3&insecure=1\033[0m"
+  echo "Hysteria2 安装成功"
+  echo "V2rayN或Nekobox 配置"
+  echo "hysteria2://$PASSWORD@$HOST_IP:$SERVER_PORT/?sni=www.bing.com&alpn=h3&insecure=1"
 }
 
 # 安装 Hysteria
