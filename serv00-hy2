@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # 获取当前用户名和主目录
 USER=$(whoami)
 USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
@@ -94,6 +92,21 @@ print_config() {
   echo "Hysteria2 安装成功"
   echo "V2rayN或Nekobox 配置"
   echo "hysteria2://$PASSWORD@$HOST_IP:$SERVER_PORT/?sni=www.bing.com&alpn=h3&insecure=1"
+  
+  # 输出 YAML 配置
+  echo "YAML 配置:"
+  cat << EOF
+- name: Hysteria
+  type: hysteria2
+  server: $HOST_IP
+  port: $SERVER_PORT
+  password: $PASSWORD
+  alpn:
+    - h3
+  sni: www.bing.com
+  skip-cert-verify: true
+  fast-open: true
+EOF
 }
 
 # 安装 Hysteria
