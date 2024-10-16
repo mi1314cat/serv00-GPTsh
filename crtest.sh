@@ -16,7 +16,14 @@ CRON_PM2_JOB="*/12 * * * * $PM2_PATH resurrect >> ${USER_HOME}/pm2_resurrect.log
 # 定义函数来添加 crontab 任务，减少重复代码
 add_cron_job() {
   local job=$1
-  (crontab -l 2>/dev/null | grep -F "$job" > /dev/null) || (echo "$job"; crontab -l 2>/dev/null) | crontab -
+  # 获取当前的 crontab 任务列表
+  crontab -l 2>/dev/null > current_cron
+  # 如果任务不存在，则追加
+  if ! grep -Fq "$job" current_cron; then
+    echo "$job" >> current_cron
+    crontab current_cron
+  fi
+  rm current_cron
 }
 
 # 检查并添加 crontab 任务
