@@ -273,7 +273,7 @@ echo "检查并添加 crontab 任务"
 add_cron_job "$CRON_JOB"
 echo "crontab 任务添加完成"
 # 启动 Xray
-screen -S xray $USER_HOME/catmi/xray/xray run
+screen -dS xray $USER_HOME/catmi/xray/xray run
 }
 ssl
 nginx
