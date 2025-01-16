@@ -66,8 +66,8 @@ cat << EOF > $USER_HOME/catmi/nginx/conf/nginx.conf
 worker_processes  1;
 
 # 错误日志和 PID 文件
-error_log  logs/error.log;
-pid        logs/nginx.pid;
+error_log  $USER_HOME/catmi/nginx/error.log;
+pid        $USER_HOME/catmi/nginx/nginx.pid;
 
 # Events 块
 events {
