@@ -53,6 +53,7 @@ ssl() {
    read -p "请输入 cfapi: " api
    read -p "请输入 cf邮箱: " mail
    curl https://get.acme.sh | sh
+   ~/.acme.sh/acme.sh --register-account -m $mail
   export CF_Token="$api"
   export CF_Email="$mail"
   ~/.acme.sh/acme.sh --issue --dns dns_cf -d $DOMAIN_LOWER
