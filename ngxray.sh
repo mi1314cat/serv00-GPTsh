@@ -31,73 +31,55 @@ read -p "请输入证书域名: " DOMAIN_LOWER
 UUID=$(generate_uuid)
 WS_PATH=$(generate_ws_path)
 WS_PATH2=$(generate_ws_path)
-#申请证书
+
+# 申请证书
 ssl() {
    cd $USER_HOME
    read -p "请输入 cfapi: " api
    read -p "请输入 cf邮箱: " mail
    curl https://get.acme.sh | sh
    ~/.acme.sh/acme.sh --register-account -m ${mail}
-  export CF_Token="${api}"
-  export CF_Email="${mail}"
-  ~/.acme.sh/acme.sh --issue --dns dns_cf -d ${DOMAIN_LOWER}
+   export CF_Token="${api}"
+   export CF_Email="${mail}"
+   ~/.acme.sh/acme.sh --issue --dns dns_cf -d ${DOMAIN_LOWER}
 }
 
+# 安装 nginx
 nginx() {
-cd $USER_HOME/catmi
+    cd $USER_HOME/catmi
+    wget http://nginx.org/download/nginx-1.25.2.tar.gz
+    tar -xzf nginx-1.25.2.tar.gz
+    rm -rf nginx-1.25.2.tar.gz
+    cd nginx-1.25.2
+    ./configure --prefix=$USER_HOME/catmi/nginx --with-http_ssl_module --with-http_v2_module --with-http_sub_module --with-stream --with-stream_ssl_module
+    make
+    make install
+    cd $USER_HOME/catmi
+    rm -rf nginx-1.25.2
 
-# 下载并解压 nginx
-wget http://nginx.org/download/nginx-1.25.2.tar.gz
-tar -xzf nginx-1.25.2.tar.gz
-rm -rf nginx-1.25.2.tar.gz
-cd nginx-1.25.2
-
-# 配置、编译和安装 nginx
-./configure --prefix=$USER_HOME/catmi/nginx \
-            --with-http_ssl_module \
-            --with-http_v2_module \
-            --with-http_sub_module \
-            --with-stream \
-            --with-stream_ssl_module
-make
-make install
-cd $USER_HOME/catmi
-rm -rf nginx-1.25.2
-# 配置 nginx
-cat << EOF > $USER_HOME/catmi/nginx/conf/nginx.conf
-# 全局配置
+    # 配置 nginx
+    cat << EOF > $USER_HOME/catmi/nginx/conf/nginx.conf
 worker_processes  1;
-
-# 错误日志和 PID 文件
 error_log  $USER_HOME/catmi/nginx/logs/error.log;
 pid        $USER_HOME/catmi/nginx/logs/nginx.pid;
 
-# Events 块
-events {
-    worker_connections  1024;
-}
+events { worker_connections  1024; }
 
-# HTTP 块
 http {
     include       mime.types;
     default_type  application/octet-stream;
-
-    log_format main '\$remote_addr - \$remote_user [\$time_local] "\$request" '
-                     '\$status \$body_bytes_sent "\$http_referer" '
+    log_format main '\$remote_addr - \$remote_user [\$time_local] "\$request" '\
+                     '\$status \$body_bytes_sent "\$http_referer" '\
                      '"\$http_user_agent" "\$http_x_forwarded_for"';
-
     access_log  $USER_HOME/catmi/nginx/logs/access.log  main;
-
     sendfile        on;
     keepalive_timeout  65;
 
     server {
         listen ${PORT} ssl;
         server_name ${DOMAIN_LOWER};
-
         ssl_certificate       "$USER_HOME/.acme.sh/${DOMAIN_LOWER}_ecc/fullchain.cer";
         ssl_certificate_key   "$USER_HOME/.acme.sh/${DOMAIN_LOWER}_ecc/${DOMAIN_LOWER}.key";
-        
         ssl_session_timeout 1d;
         ssl_session_cache shared:MozSSL:10m;
         ssl_session_tickets off;
@@ -105,7 +87,7 @@ http {
         ssl_prefer_server_ciphers off;
 
         location / {
-            proxy_pass https://pan.imcxx.com; #伪装网址
+            proxy_pass https://pan.imcxx.com;
             proxy_redirect off;
             proxy_ssl_server_name on;
             sub_filter_once off;
@@ -141,21 +123,20 @@ http {
 }
 EOF
 
-# 启动 nginx
-cd $USER_HOME/catmi/nginx/sbin
-./nginx -c $USER_HOME/catmi/nginx/conf/nginx.conf
-cd
+    # 启动 nginx
+    cd $USER_HOME/catmi/nginx/sbin
+    ./nginx -c $USER_HOME/catmi/nginx/conf/nginx.conf
 }
-xray() {
-# 下载并解压 Xray
-cd $USER_HOME/catmi/xray
-wget https://github.com/XTLS/Xray-core/releases/download/v24.12.31/Xray-freebsd-64.zip
-unzip Xray-freebsd-64.zip
-rm -rf Xray-freebsd-64.zip
-chmod +x xray
 
-# 配置 Xray
-cat <<EOF > $USER_HOME/catmi/xray/config.json
+# 安装 xray
+xray() {
+    cd $USER_HOME/catmi/xray
+    wget https://github.com/XTLS/Xray-core/releases/download/v24.12.31/Xray-freebsd-64.zip
+    unzip Xray-freebsd-64.zip
+    rm -rf Xray-freebsd-64.zip
+    chmod +x xray
+
+    cat <<EOF > $USER_HOME/catmi/xray/config.json
 {
     "log": {
         "disabled": false,
@@ -213,42 +194,42 @@ cat <<EOF > $USER_HOME/catmi/xray/config.json
             "tag": "in1"
         },
         {
-          "listen": "0.0.0.0",
-          "port": ${port},
-          "protocol": "vless",
-          "settings": {
-              "clients": [
-                  {
-                      "id": "f0afa9a8-c0f9-4353-abe0-528d9a01f1de",
-                      "flow": "xtls-rprx-vision"
-                  }
-              ],
-              "decryption": "none",
-              "fallbacks": [
-                  {
-                    "dest": ${PORT}
-                  }
-              ]
-          },
-          "streamSettings": {
-              "network": "tcp",
-              "security": "reality",
-              "realitySettings": {
-                  "show": true,
-                  "dest": "swift.com:443",
-                  "xver": 0,
-                  "serverNames": [
-                      "swift.com"
-                  ],
-                  "privateKey": "AH4KvC_bkqp1lzOsBafBeM-pcotZHgCar93FYe6SFgQ",
-                  "minClientVer": "",
-                  "maxClientVer": "",
-                  "maxTimeDiff": 0,
-                  "shortIds": [
-                      "f286e42f0a4823f1"
-                  ]
-              }
-          }
+            "listen": "0.0.0.0",
+            "port": ${port},
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "f0afa9a8-c0f9-4353-abe0-528d9a01f1de",
+                        "flow": "xtls-rprx-vision"
+                    }
+                ],
+                "decryption": "none",
+                "fallbacks": [
+                    {
+                      "dest": ${PORT}
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "show": true,
+                    "dest": "swift.com:443",
+                    "xver": 0,
+                    "serverNames": [
+                        "swift.com"
+                    ],
+                    "privateKey": "AH4KvC_bkqp1lzOsBafBeM-pcotZHgCar93FYe6SFgQ",
+                    "minClientVer": "",
+                    "maxClientVer": "",
+                    "maxTimeDiff": 0,
+                    "shortIds": [
+                        "f286e42f0a4823f1"
+                    ]
+                }
+            }
         }
     ],
     "outbounds": [
@@ -259,22 +240,15 @@ cat <<EOF > $USER_HOME/catmi/xray/config.json
     ]
 }
 EOF
-# 定义 crontab 任务
-CRON_JOB="0 */12 * * * screen -S xray $USER_HOME/catmi/xray/xray run"
 
-# 定义函数来添加 crontab 任务，减少重复代码
-add_cron_job() {
-  local job=$1
-  (crontab -l 2>/dev/null | grep -F "$job") || (crontab -l 2>/dev/null; echo "$job") | crontab -
+    # 添加定时任务
+    CRON_JOB="0 */12 * * * screen -S xray $USER_HOME/catmi/xray/xray run"
+    (crontab -l 2>/dev/null | grep -F "$CRON_JOB") || (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
+
+    # 启动 Xray
+    screen -dmS xray $USER_HOME/catmi/xray/xray run
 }
 
-# 添加 crontab 任务
-echo "检查并添加 crontab 任务"
-add_cron_job "$CRON_JOB"
-echo "crontab 任务添加完成"
-# 启动 Xray
-screen -dS xray $USER_HOME/catmi/xray/xray run
-}
 ssl
 nginx
 xray
