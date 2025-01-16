@@ -208,7 +208,7 @@ cat <<EOF > $USER_HOME/catmi/xray/config.json
         },
         {
           "listen": "0.0.0.0",
-          "port": ${PORT},
+          "port": ${port},
           "protocol": "vless",
           "settings": {
               "clients": [
@@ -220,7 +220,7 @@ cat <<EOF > $USER_HOME/catmi/xray/config.json
               "decryption": "none",
               "fallbacks": [
                   {
-                    "dest": 9997
+                    "dest": ${PORT}
                   }
               ]
           },
