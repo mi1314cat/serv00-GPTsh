@@ -66,8 +66,8 @@ cat << EOF > $USER_HOME/catmi/nginx/conf/nginx.conf
 worker_processes  1;
 
 # 错误日志和 PID 文件
-error_log  $USER_HOME/catmi/nginx/error.log;
-pid        $USER_HOME/catmi/nginx/nginx.pid;
+error_log  $USER_HOME/catmi/nginx/logs/error.log;
+pid        $USER_HOME/catmi/nginx/logs/nginx.pid;
 
 # Events 块
 events {
@@ -83,7 +83,7 @@ http {
                      '\$status \$body_bytes_sent "\$http_referer" '
                      '"\$http_user_agent" "\$http_x_forwarded_for"';
 
-    access_log  $USER_HOME/catmi/nginx/access.log  main;
+    access_log  $USER_HOME/catmi/nginx/logs/access.log  main;
 
     sendfile        on;
     keepalive_timeout  65;
