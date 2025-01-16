@@ -83,7 +83,7 @@ http {
                      '\$status \$body_bytes_sent "\$http_referer" '
                      '"\$http_user_agent" "\$http_x_forwarded_for"';
 
-    access_log  logs/access.log  main;
+    access_log  $USER_HOME/catmi/nginx/access.log  main;
 
     sendfile        on;
     keepalive_timeout  65;
