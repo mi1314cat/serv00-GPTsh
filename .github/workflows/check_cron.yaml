@@ -30,10 +30,11 @@ jobs:
             ssh=$(echo "$account" | jq -r '.ssh')
             echo "echo \"Executing for $username@$ssh\"" >> sshpass.sh
             echo "echo \"Starting SSH session for $username@$ssh\"" >> sshpass.sh
-            echo "sshpass -p '$password' ssh -t -o StrictHostKeyChecking=no '$username@$ssh''bash <(curl -s https://github.com/mi1314cat/serv00-GPTsh/raw/refs/heads/main/crtest.sh)'" >> sshpass.sh
+            echo "sshpass -p '$password' ssh -t -o StrictHostKeyChecking=no \"$username@$ssh\" 'bash <(curl -s https://github.com/mi1314cat/serv00-GPTsh/raw/refs/heads/main/crtest.sh)'" >> sshpass.sh
           done < <(jq -c '.[]' accounts.json)
           chmod +x sshpass.sh
-          
 
       - name: Execute SSH Commands
         run: ./sshpass.sh
+        env:
+          ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
