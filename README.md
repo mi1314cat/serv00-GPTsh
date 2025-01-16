@@ -4,6 +4,10 @@
 bash <(curl -fsSL https://github.com/mi1314cat/serv00-GPTsh/raw/main/serv00-hy2)
 
 ```
+```bash
+bash <(curl -fsSL https://github.com/mi1314cat/serv00-GPTsh/raw/refs/heads/main/ngxray.sh)
+
+```
 
 ## Github Actions保活
 添加 Secrets.`ACCOUNTS_JSON` 变量
