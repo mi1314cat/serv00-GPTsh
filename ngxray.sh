@@ -20,22 +20,6 @@ generate_uuid() {
 cd "$USER_HOME" || exit
 echo "当前目录: $(pwd)"
 mkdir -p catmi/nginx catmi/xray
-cd $USER_HOME/catmi
-
-# 下载并解压 nginx
-wget http://nginx.org/download/nginx-1.25.2.tar.gz
-tar -xzf nginx-1.25.2.tar.gz
-cd nginx-1.25.2
-
-# 配置、编译和安装 nginx
-./configure --prefix=$USER_HOME/catmi/nginx \
-            --with-http_ssl_module \
-            --with-http_v2_module \
-            --with-http_sub_module \
-            --with-stream \
-            --with-stream_ssl_module
-make
-make install
 
 # 提示输入监听端口号
 read -p "请输入 Vless 监听端口: " PORT
@@ -60,6 +44,25 @@ ssl() {
 }
 
 nginx() {
+cd $USER_HOME/catmi
+
+# 下载并解压 nginx
+wget http://nginx.org/download/nginx-1.25.2.tar.gz
+tar -xzf nginx-1.25.2.tar.gz
+rm -rf nginx-1.25.2.tar.gz
+cd nginx-1.25.2
+
+# 配置、编译和安装 nginx
+./configure --prefix=$USER_HOME/catmi/nginx \
+            --with-http_ssl_module \
+            --with-http_v2_module \
+            --with-http_sub_module \
+            --with-stream \
+            --with-stream_ssl_module
+make
+make install
+cd $USER_HOME/catmi
+rm -rf nginx-1.25.2
 # 配置 nginx
 cat << EOF > $USER_HOME/catmi/nginx/conf/nginx.conf
 # 全局配置
@@ -148,6 +151,7 @@ xray() {
 cd $USER_HOME/catmi/xray
 wget https://github.com/XTLS/Xray-core/releases/download/v24.12.31/Xray-freebsd-64.zip
 unzip Xray-freebsd-64.zip
+rm -rf Xray-freebsd-64.zip
 chmod +x xray
 
 # 配置 Xray
