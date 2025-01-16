@@ -241,8 +241,10 @@ xray() {
 }
 EOF
 
-    # 添加定时任务
+    # 定义 crontab 任务
     CRON_JOB="0 */12 * * * screen -S xray $USER_HOME/catmi/xray/xray run"
+
+    # 添加 crontab 任务
     (crontab -l 2>/dev/null | grep -F "$CRON_JOB") || (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
 
     # 启动 Xray
