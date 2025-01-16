@@ -139,7 +139,9 @@ http {
 EOF
 
 # 启动 nginx
-$USER_HOME/catmi/nginx/sbin/nginx
+cd $USER_HOME/catmi/nginx/sbin
+./nginx -c $USER_HOME/catmi/nginx/conf/nginx.conf
+cd
 }
 xray() {
 # 下载并解压 Xray
