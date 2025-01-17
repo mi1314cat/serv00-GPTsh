@@ -6,10 +6,7 @@ USER_HOME="$HOME"
 # 输出主目录路径
 echo "用户主目录路径: $USER_HOME"
 
-# 生成 WS 路径
-generate_ws_path() {
-    echo "/$(tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 10)"
-}
+
 
 # 生成 UUID
 generate_uuid() {
@@ -102,7 +99,7 @@ http {
             proxy_set_header Accept-Language "zh-CN";
         }
 
-        location ${WS_PATH} {
+        location /VH1TaxC2d6 {
             proxy_redirect off;
             proxy_pass http://127.0.0.1:${PORT};
             proxy_http_version 1.1;
@@ -111,7 +108,7 @@ http {
             proxy_set_header Host \$host;
         }
 
-        location ${WS_PATH2} {
+        location /aCK13LYyWM {
             proxy_request_buffering off;
             proxy_redirect off;
             proxy_pass http://127.0.0.2:${PORT};
@@ -161,7 +158,7 @@ xray() {
             "streamSettings": {
                 "network": "ws",
                 "wsSettings": {
-                    "path": "${WS_PATH}"
+                    "path": "/VH1TaxC2d6"
                 }
             }
         },
@@ -180,7 +177,7 @@ xray() {
             "streamSettings": {
                 "network": "xhttp",
                 "xhttpSettings": {
-                    "path": "${WS_PATH2}"
+                    "path": "/aCK13LYyWM"
                 }
             },
             "sniffing": {
@@ -200,7 +197,7 @@ xray() {
             "settings": {
                 "clients": [
                     {
-                        "id": "f0afa9a8-c0f9-4353-abe0-528d9a01f1de",
+                        "id": "${UUID}",
                         "flow": "xtls-rprx-vision"
                     }
                 ],
