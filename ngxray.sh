@@ -74,6 +74,7 @@ http {
     server {
         listen ${PORT} ssl;
         server_name ${DOMAIN_LOWER};
+        http2 on;
         ssl_certificate       "$USER_HOME/.acme.sh/${DOMAIN_LOWER}_ecc/fullchain.cer";
         ssl_certificate_key   "$USER_HOME/.acme.sh/${DOMAIN_LOWER}_ecc/${DOMAIN_LOWER}.key";
         ssl_session_timeout 1d;
