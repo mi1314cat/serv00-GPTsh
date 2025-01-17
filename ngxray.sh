@@ -26,8 +26,7 @@ port=${port:-9999}
 read -p "请输入证书域名: " DOMAIN_LOWER
 # 生成 UUID 和 WS 路径
 UUID=$(generate_uuid)
-WS_PATH=$(generate_ws_path)
-WS_PATH2=$(generate_ws_path)
+
 
 # 申请证书
 ssl() {
