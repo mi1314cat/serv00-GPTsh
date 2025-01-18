@@ -1,9 +1,15 @@
 
-### serv00一键安装hysteria2脚本
+# serv00一键安装脚本
+```bash
+bash <(curl -fsSL https://github.com/mi1314cat/serv00-GPTsh/raw/refs/heads/main/panel.sh)
+
+```
+# hy2脚本
 ```bash
 bash <(curl -fsSL https://github.com/mi1314cat/serv00-GPTsh/raw/main/serv00-hy2)
 
 ```
+# xray脚本
 ```bash
 bash <(curl -fsSL https://github.com/mi1314cat/serv00-GPTsh/raw/refs/heads/main/ngxray.sh)
 
