@@ -121,8 +121,15 @@ http {
 EOF
 
     # 启动 nginx
-    cd $USER_HOME/catmi/nginx/sbin
-    ./nginx -c $USER_HOME/catmi/nginx/conf/nginx.conf
+     # 定义 crontab 任务
+    CRON_JOB_NGINX="0 */12 * * * screen -S nginx $USER_HOME/catmi/nginx/sbin/nginx -c $USER_HOME/catmi/nginx/conf/nginx.conf"
+
+    # 添加 crontab 任务
+    (crontab -l 2>/dev/null | grep -F "$CRON_JOB_NGINX") || (crontab -l 2>/dev/null; echo "$CRON_JOB_NGINX") | crontab -
+
+    # 启动 Xray
+    screen -dmS nginx $USER_HOME/catmi/nginx/sbin/nginx -c $USER_HOME/catmi/nginx/conf/nginx.conf
+    
 }
 
 # 安装 xray
@@ -239,10 +246,10 @@ xray() {
 EOF
 
     # 定义 crontab 任务
-    CRON_JOB="0 */12 * * * screen -S xray $USER_HOME/catmi/xray/xray run"
+    CRON_JOB_XRAY="0 */12 * * * screen -S xray $USER_HOME/catmi/xray/xray run"
 
     # 添加 crontab 任务
-    (crontab -l 2>/dev/null | grep -F "$CRON_JOB") || (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
+    (crontab -l 2>/dev/null | grep -F "$CRON_JOB_XRAY") || (crontab -l 2>/dev/null; echo "$CRON_JOB_XRAY") | crontab -
 
     # 启动 Xray
     screen -dmS xray $USER_HOME/catmi/xray/xray run
