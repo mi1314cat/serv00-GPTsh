@@ -9,6 +9,7 @@ HYSTERIA_WORKDIR="${USER_HOME}/catmi/hy2"
 # 定义 crontab 任务
 XRAY_CRON_JOB="0 */12 * * * screen -S xray ${USER_HOME}/catmi/xray/xray run"
 HY2_CRON_JOB="0 */12 * * * screen -S hy2 $HYSTERIA_WORKDIR/web server -c $HYSTERIA_WORKDIR/config.yaml"
+NGINX_CRON_JOB="0 */12 * * * screen -S nginx $USER_HOME/catmi/nginx/sbin/nginx -c $USER_HOME/catmi/nginx/conf/nginx.conf"
 
 # 定义函数来添加 crontab 任务，减少重复代码
 add_cron_job() {
@@ -22,5 +23,8 @@ add_cron_job "$XRAY_CRON_JOB"
 
 echo "检查并添加 hy2 的 crontab 任务"
 add_cron_job "$HY2_CRON_JOB"
+
+echo "检查并添加 nginx 的 crontab 任务"
+add_cron_job "$NGINX_CRON_JOB"
 
 echo "所有 crontab 任务添加完成"
