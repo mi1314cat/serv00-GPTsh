@@ -13,7 +13,7 @@ printf "\e[0m"
 echo "请选择要执行的操作:"
 echo "1. 安装 Xray"
 echo "2. 安装 Hy2"
-echo "3. 清理服务"
+echo "3. 系统初始化"
 echo "0. 退出脚本"
 
 # 读取用户输入
