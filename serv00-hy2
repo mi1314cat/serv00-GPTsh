@@ -96,10 +96,10 @@ run_files() {
   screen -dmS hy2 $HYSTERIA_WORKDIR/web server -c $HYSTERIA_WORKDIR/config.yaml
   
   # 定义 crontab 任务
-  CRON_JOB_hy2="0 */12 * * * screen -S hy2 $HYSTERIA_WORKDIR/web server -c $HYSTERIA_WORKDIR/config.yaml"
+  HY2_CRON_JOB="0 */12 * * * screen -S hy2 $HYSTERIA_WORKDIR/web server -c $HYSTERIA_WORKDIR/config.yaml"
   
   # 添加 crontab 任务（避免重复）
-  (crontab -l 2>/dev/null | grep -F "$CRON_JOB_hy2") || (crontab -l 2>/dev/null; echo "$CRON_JOB_hy2") | crontab -
+  (crontab -l 2>/dev/null | grep -F "$HY2_CRON_JOB") || (crontab -l 2>/dev/null; echo "$HY2_CRON_JOB") | crontab -
   
   echo -e "\e[1;32m服务已启动，且每 12 小时自动重新启动的任务已添加到 crontab\e[0m"
 }
