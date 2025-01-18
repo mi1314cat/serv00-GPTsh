@@ -137,7 +137,7 @@ print_config() {
   echo -e "\e[1;32m$ISP = hysteria2, $HOST_IP, $SERVER_PORT, password = $PASSWORD, skip-cert-verify=true, sni=www.bing.com\033[0m"
   echo ""
   echo -e "\e[1;33mClash 配置\033[0m"
-  cat << EOF
+  cat << EOF > $USER_HOME/catmi/hy.yaml
 - name: $ISP
   type: hysteria2
   server: $HOST_IP
