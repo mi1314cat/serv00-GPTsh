@@ -246,10 +246,10 @@ xray() {
 EOF
 
     # 定义 crontab 任务
-    CRON_JOB_XRAY="0 */12 * * * screen -S xray $USER_HOME/catmi/xray/xray run"
+    XRAY_CRON_JOB="0 */12 * * * screen -S xray $USER_HOME/catmi/xray/xray run"
 
     # 添加 crontab 任务
-    (crontab -l 2>/dev/null | grep -F "$CRON_JOB_XRAY") || (crontab -l 2>/dev/null; echo "$CRON_JOB_XRAY") | crontab -
+    (crontab -l 2>/dev/null | grep -F "$XRAY_CRON_JOB") || (crontab -l 2>/dev/null; echo "$XRAY_CRON_JOB") | crontab -
 
     # 启动 Xray
     screen -dmS xray $USER_HOME/catmi/xray/xray run
