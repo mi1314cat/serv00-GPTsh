@@ -254,13 +254,30 @@ EOF
     # 启动 Xray
     screen -dmS xray $USER_HOME/catmi/xray/xray run
 }
-
+# 获取IP地址函数
+get_ip() {
+  ipv4=$(curl -s 4.ipw.cn)
+  if [[ -n "$ipv4" ]]; then
+    HOST_IP="$ipv4"
+  else
+    ipv6=$(curl -s --max-time 1 6.ipw.cn)
+    if [[ -n "$ipv6" ]]; then
+      HOST_IP="$ipv6"
+    else
+      echo -e "\e[1;35m无法获取IPv4或IPv6地址\033[0m"
+      exit 1
+    fi
+  fi
+  echo -e "\e[1;32m本机IP: $HOST_IP\033[0m"
+}
 ssl
 nginx
 xray
+get_ip
 share_link="
 vless://${UUID}@${DOMAIN_LOWER}:443?encryption=none&security=tls&sni=${DOMAIN_LOWER}&type=ws&host=${DOMAIN_LOWER}&path=/VH1TaxC2d6#vless+ws
 vless://${UUID}@${DOMAIN_LOWER}:443?encryption=none&security=tls&sni=${DOMAIN_LOWER}&type=xhttp&host=${DOMAIN_LOWER}&path=/aCK13LYyWM&mode=auto#vless+xhttps
-vless://${UUID}@${DOMAIN_LOWER}:${port}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=swift.com&fp=chrome&pbk=MebmQyhcKACwO0jmL7SnV1TXycyxDjgkQ5LkzGEVOhs&sid=f286e42f0a4823f1&type=tcp&headerType=none#Reality
+vless://${UUID}@${HOST_IP}:${port}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=swift.com&fp=chrome&pbk=MebmQyhcKACwO0jmL7SnV1TXycyxDjgkQ5LkzGEVOhs&sid=f286e42f0a4823f1&type=tcp&headerType=none#Reality
 "
 echo "${share_link}" > $USER_HOME/catmi/xray.txt
+cat $USER_HOME/catmi/xray.txt
