@@ -8,10 +8,11 @@ printf "       -----------------------------------------\n"
 printf "\e[0m"
 
 # 设置工作目录
-USER=$(whoami)
-USER_HOME=$(readlink -f /home/$USER)
-HYSTERIA_WORKDIR="$USER_HOME/catmi/hy2"
 
+USER=$(whoami)
+USER_LOWER="${USER,,}"
+USER_HOME="/home/${USER_LOWER}"
+HYSTERIA_WORKDIR="${USER_HOME}/catmi/hy2"
 # 创建必要的目录
 [ ! -d "$HYSTERIA_WORKDIR" ] && mkdir -p "$HYSTERIA_WORKDIR"
 
