@@ -259,8 +259,8 @@ ssl
 nginx
 xray
 share_link="
-vless://${UUID}@${DOMAIN_LOWER}:443?encryption=none&security=tls&sni=${DOMAIN_LOWER}&type=ws&host=${DOMAIN_LOWER}&path=%2FaCK13LYyWM#vless+ws
-vless://${UUID}@${DOMAIN_LOWER}:443?encryption=none&security=tls&sni=${DOMAIN_LOWER}&type=xhttp&host=${DOMAIN_LOWER}&path=%2FXkpgx2prIH&mode=auto#vless+xhttps
+vless://${UUID}@${DOMAIN_LOWER}:443?encryption=none&security=tls&sni=${DOMAIN_LOWER}&type=ws&host=${DOMAIN_LOWER}&path=/VH1TaxC2d6#vless+ws
+vless://${UUID}@${DOMAIN_LOWER}:443?encryption=none&security=tls&sni=${DOMAIN_LOWER}&type=xhttp&host=${DOMAIN_LOWER}&path=/aCK13LYyWM&mode=auto#vless+xhttps
 vless://${UUID}@${DOMAIN_LOWER}:${port}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=swift.com&fp=chrome&pbk=MebmQyhcKACwO0jmL7SnV1TXycyxDjgkQ5LkzGEVOhs&sid=f286e42f0a4823f1&type=tcp&headerType=none#Reality
 "
 echo "${share_link}" > $USER_HOME/catmi/xray.txt
